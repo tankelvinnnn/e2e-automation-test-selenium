@@ -1,0 +1,19 @@
+# Build output
+target/
+
+# IDE-specific
+.all.automation.iml
+.gradle/
+.idea/
+.settings/
+.vscode/
+
+# Other project-specific files
+results/
+
+# Eclipse project files
+.project
+.classpath
+
+# Ignore .idea inside src (if needed)
+src/.idea/

@@ -1,0 +1,21 @@
+{
+  "dashboardUrl" : {
+    "adminUrl" : "https://admin-staging.cakap.com"
+  },
+  "adminValidAccount" : {
+    "email" : "tester@cakap.com",
+    "password" : "tester@Cakap2023"
+  },
+  "adminInvalidAccount" : {
+    "inemail" : "testcakap89@gmail.com",
+    "inpassword" : "tester@Cakap2023"
+  },
+  "staffAccount": {
+    "emailId" : "kelvincheck",
+    "emailDomain" : "@cakap.com",
+    "oldPassword" : "12345678",
+    "newPassword" : "c4k4p123",
+    "roleAccess" : "Super Admin",
+    "name" : "Kelvin Check"
+  }
+}

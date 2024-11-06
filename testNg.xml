@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Admin Dashboard">
+    <!-- <parameter name="browser" value="chrome"/>
+    <test name="Admin Dashboard Automation Test">
+        <parameter name="base_url" value="https://admin-staging.cakap.com"/>
+        <classes>
+            <class name="com.selenium.scripts.admin.AdminLoginTest"/>
+        </classes>
+    </test> -->
+    <parameter name="browser" value="chrome"/>
+    <test name="Payment Dasboard Automation Test">
+        <parameter name="base_url" value="https://pay-staging.cakap.com"/>
+        <classes>
+            <class name="com.selenium.scripts.payment.PaymentPrivateTest"/>
+        </classes>
+    </test>
+</suite>
