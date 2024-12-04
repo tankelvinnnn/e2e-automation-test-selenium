@@ -1,0 +1,22 @@
+{
+  "paymentCampaign" : {
+    "private":{
+      "courseId" : 5921,
+      "productName" : "English Discovery"
+    },
+    "club" : {
+      "courseId" : 5923,
+      "productName" : "English Discovery"
+    },
+    "semiPrivate" : {
+      "courseId" : 5925,
+      "productName" : "English Discovery"
+    }
+  },
+  "studentNewAccount": {
+    "userName" : "Kelvin QA Automation",
+    "userPhone" : "81234567890",
+    "userEmail" : "kelvinqa@automation.com",
+    "userPassword" : "aA@aaa234"
+  } 
+}

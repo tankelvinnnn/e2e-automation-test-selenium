@@ -2,29 +2,23 @@ package com.selenium.common;
 
 import java.time.Duration;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestContext;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Parameters;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class TestEngine {
     
     public static String browserName = null;
-    public static WebDriver driver = null;
+    public static RemoteWebDriver driver = null;
     public static String baseUrl = null;
     
-    @BeforeSuite
-    @Parameters("browser")
     public static void setupSuite(String browser){
         browserName = browser;
 
@@ -48,7 +42,7 @@ public class TestEngine {
         }
         driver.manage().window().maximize();
         driver.manage().deleteAllCookies();
-        System.out.println("Successfully Launch browser "+ browserName+ "...................");
+        System.out.println("Launching Test Engine: "+ browserName+ "...................");
     }
 
     private static ChromeOptions getChromeOptions() {
@@ -57,6 +51,10 @@ public class TestEngine {
         options.setImplicitWaitTimeout(Duration.ofSeconds(30));
         options.setAcceptInsecureCerts(true);
         options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--disable-notifications");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
+        options.setExperimentalOption("useAutomationExtension", false);
         // options.addArguments("--headless=new");
         return options;
     }
@@ -79,15 +77,15 @@ public class TestEngine {
         return options;
     }
 
-    @AfterSuite
-    public void clearBrowser(){
+    public static void clearBrowser(){
         driver.manage().deleteAllCookies();
         driver.quit();
+        System.out.println("Test Engine has been stopped");
     }
 
-    @BeforeClass
-    public void setUp(ITestContext context) {
-        // Ambil base URL dari ITestContext
+    public static void getUrl(ITestContext context) {
+        // Get base URL from ITestContext
         baseUrl = context.getCurrentXmlTest().getParameter("base_url");
+        // System.out.println("Base url: "+baseUrl);
     }
 }

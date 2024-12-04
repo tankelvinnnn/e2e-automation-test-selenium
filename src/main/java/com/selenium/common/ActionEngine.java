@@ -16,6 +16,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.v130.network.Network;
 import org.openqa.selenium.devtools.v130.network.model.Response;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -45,9 +46,10 @@ public class ActionEngine extends TestEngine {
 				isLocated = true;
 			}
 		} catch (Exception e) {
+			System.err.println("Error while waiting for element: " + locatorName);
 			e.printStackTrace();
 		} finally {
-			Assert.assertTrue(isLocated, "Failed to locate element: " +  locator.toString());
+			Assert.assertTrue(isLocated, "waitForElementToBeVisible: " + locatorName + " is not visible");
 		}
 		return element;
 	}
@@ -61,9 +63,10 @@ public class ActionEngine extends TestEngine {
 				isClickable = true;
 			}
 		} catch (Exception e) {
+			System.err.println("Error while waiting for element: " + locatorName);
 			e.printStackTrace();
 		} finally {
-			Assert.assertTrue(isClickable, "Element" +  locator.toString() + "can't be clicked");
+			Assert.assertTrue(isClickable, "waitForElementToBeClickable: Element" +  locatorName + "can't be clicked");
 		}
 		return element;
 	}
@@ -77,15 +80,16 @@ public class ActionEngine extends TestEngine {
 				isSuccess = true;
 			}
 		} catch (Exception e) {
+			System.err.println("Error while waiting for element: " + locatorName);
 			e.printStackTrace();
 		} finally {
-			Assert.assertTrue(isSuccess, "waitForElementPresent : Falied to locate element " + locator);
+			Assert.assertTrue(isSuccess, "waitForElementPresent: Falied to locate element " + locatorName);
 		}
 	}
 
 	public static void navigateTo(String url) throws Throwable {
 		driver.navigate().to(url);
-		System.out.println("Navigated to URL: " + url);
+		System.out.println("Accessing URL: " + url);
 	}
 
     public static boolean click(By locator, String locatorName) throws Throwable{
@@ -97,6 +101,7 @@ public class ActionEngine extends TestEngine {
             	isSuccess = true;
 			}
 		} catch (Exception e) {
+			System.err.println("Error while try to click element: " + locatorName);
 			e.printStackTrace();
 		} finally {
 			Assert.assertTrue(isSuccess, "Failed to click on " + locatorName);
@@ -115,6 +120,7 @@ public class ActionEngine extends TestEngine {
             	isSuccess = true;
 			}
 		} catch (Exception e) {
+			System.err.println("Error while try to typing on element " + locatorName);
 			e.printStackTrace();
 		} finally {
 			Assert.assertTrue(isSuccess,"Data typing action is not perform on " + locatorName);
@@ -138,9 +144,10 @@ public class ActionEngine extends TestEngine {
             	isSuccess = true;
 			}
 		} catch (Exception e) {
+			System.err.println("Error while try to slow type on element " + locatorName);
 			e.printStackTrace();
 		} finally {
-			Assert.assertTrue(isSuccess, "Data typing action is not perform on " + locatorName);
+			Assert.assertTrue(isSuccess, "Slow data typing action is not perform on " + locatorName);
 		}
 		return isSuccess;
 	}
@@ -154,6 +161,7 @@ public class ActionEngine extends TestEngine {
 				isSuccess = true;
 			}
 		} catch (Exception e) {
+			System.err.println("Error while switching to window " + windowTitle);
 			e.printStackTrace();
 		} finally {
 			Assert.assertTrue(isSuccess, "Failed to swicthed window with title: " + windowTitle);
@@ -173,6 +181,7 @@ public class ActionEngine extends TestEngine {
 				}
 			}
 		} catch (Exception e) {
+			System.err.println("Error while switching to new window");
 			e.printStackTrace();
 		} finally {
 			Assert.assertTrue(isSuccess,"Failed to switch to new windows");
@@ -186,6 +195,7 @@ public class ActionEngine extends TestEngine {
 			driver.switchTo().window(mainWindowHandle);
 			isSuccess = true;
 		} catch (Exception e) {
+			System.err.println("Error while switching to main window");
 			e.printStackTrace();
 		} finally {
 			Assert.assertTrue(isSuccess, "Failed to swicth to main window");
@@ -199,6 +209,7 @@ public class ActionEngine extends TestEngine {
 			select.selectByValue(value);
 			isSuccess = true;
 		} catch (Exception e) {
+			System.err.println("Error while selecting option " + locatorName);
 			e.printStackTrace();
 		} finally {
 			Assert.assertTrue(isSuccess,"Failed to select option with value: " + value + " in " + locatorName);
@@ -210,27 +221,28 @@ public class ActionEngine extends TestEngine {
 		driver.navigate().refresh();
 	}
 
-	public static void clearBrowserData(){
+	public static void clearBrowserData() throws InterruptedException{
+		Actions actions = new Actions(driver);
 		switch (browserName.toLowerCase()) {
 			case "chrome" -> {
-                            driver.get("chrome://settings/clearBrowserData");
-                            JavascriptExecutor js = (JavascriptExecutor) driver;
-                            String script = "return document.querySelector('settings-ui').shadowRoot.querySelector('settings-main').shadowRoot.querySelector('settings-basic-page').shadowRoot.querySelector('settings-section > settings-privacy-page').shadowRoot.querySelector('settings-clear-browsing-data-dialog').shadowRoot.querySelector('#clearBrowsingDataDialog').querySelector('div[slot=\"button-container\"]').querySelector('cr-button#clearButton')";
-                            WebElement clearData = (WebElement)js.executeScript(script);
-                            clearData.click();
-                }
+                driver.get("chrome://settings/clearBrowserData");
+				Thread.sleep(2000);
+        		actions.sendKeys(Keys.TAB).perform();
+				actions.sendKeys(Keys.ENTER).perform();
+        		System.out.println("Browser has been cleared");
+            }
 			case "firefox" -> {
-                            driver.get("about:preferences#privacy");
-                            wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-                            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("clearSiteDataButton")));
-                            driver.findElement(By.id("clearSiteDataButton")).click();
-                }
+                // driver.get("about:preferences#privacy");
+                // wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+                // wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("clearSiteDataButton")));
+                // driver.findElement(By.id("clearSiteDataButton")).click();
+            }
 			case "edge" -> {
-                            driver.get("edge://settings/clearBrowserData");
-                            wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-                            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//settings-ui//settings-clear-browsing-data-dialog")));
-                            driver.findElement(By.xpath("//settings-clear-browsing-data-dialog//cr-button[@id='clearBrowsingDataConfirm']")).click();
-                }
+                driver.get("edge://settings/privacy/clearBrowsingData/clearBrowserData");
+                // wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                // wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//settings-ui//settings-clear-browsing-data-dialog")));
+                // driver.findElement(By.xpath("//settings-clear-browsing-data-dialog//cr-button[@id='clearBrowsingDataConfirm']")).click();
+            }
 		}
 	}
 
@@ -254,60 +266,49 @@ public class ActionEngine extends TestEngine {
 		Actions actions = new Actions(driver);
 		try{
 			switch (action.toLowerCase()) {
-				case "enter":
-					actions.sendKeys(Keys.ENTER).perform();
-					isSuccess = true;
-					break;
-	
-				case "tab":
-					actions.sendKeys(Keys.TAB).perform();
-					isSuccess = true;
-					break;
-	
-				case "space":
-					actions.sendKeys(Keys.SPACE).perform();
-					isSuccess = true;
-					break;
-	
-				case "backspace":
-					actions.sendKeys(Keys.BACK_SPACE).perform();
-					isSuccess = true;
-					break;
-	
-				case "esc":
-				case "escape":
-					actions.sendKeys(Keys.ESCAPE).perform();
-					isSuccess = true;
-					break;
-	
-				case "arrow_up":
-					actions.sendKeys(Keys.ARROW_UP).perform();
-					isSuccess = true;
-					break;
-	
-				case "arrow_down":
-					actions.sendKeys(Keys.ARROW_DOWN).perform();
-					isSuccess = true;
-					break;
-	
-				case "arrow_left":
-					actions.sendKeys(Keys.ARROW_LEFT).perform();
-					isSuccess = true;
-					break;
-	
-				case "arrow_right":
-					actions.sendKeys(Keys.ARROW_RIGHT).perform();
-					isSuccess = true;
-					break;
-	
-				default:
-					isSuccess = false;
-					break;
+				case "enter" -> {
+                    actions.sendKeys(Keys.ENTER).perform();
+                    isSuccess = true;
+                }
+				case "tab" -> {
+                    actions.sendKeys(Keys.TAB).perform();
+                    isSuccess = true;
+                }
+				case "space" -> {
+                    actions.sendKeys(Keys.SPACE).perform();
+                    isSuccess = true;
+                }
+				case "backspace" -> {
+                    actions.sendKeys(Keys.BACK_SPACE).perform();
+                    isSuccess = true;
+                }
+				case "esc", "escape" -> {
+                    actions.sendKeys(Keys.ESCAPE).perform();
+                    isSuccess = true;
+                }
+				case "arrow_up" -> {
+                    actions.sendKeys(Keys.ARROW_UP).perform();
+                    isSuccess = true;
+                }
+				case "arrow_down" -> {
+                    actions.sendKeys(Keys.ARROW_DOWN).perform();
+                    isSuccess = true;
+                }
+				case "arrow_left" -> {
+                    actions.sendKeys(Keys.ARROW_LEFT).perform();
+                	isSuccess = true;
+                }
+				case "arrow_right" -> {
+                    actions.sendKeys(Keys.ARROW_RIGHT).perform();
+                    isSuccess = true;
+                }
+                default -> isSuccess = false;
 			}
 		} catch (Exception e) {
+			System.err.println("Error while send action " + action);
 			e.printStackTrace();
 		} finally {
-			Assert.assertTrue(isSuccess, "Failed to send action key "+ action);
+			Assert.assertTrue(isSuccess, "Failed to send action key " + action);
 		}
 	}
 
@@ -325,12 +326,8 @@ public class ActionEngine extends TestEngine {
         driver.navigate().refresh();
     }
 
-	public static void waitForMilliseconds(int milliseconds) {
-		try {
-			Thread.sleep(milliseconds);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	public static void waitForMilliseconds(int milliseconds) throws InterruptedException {
+		Thread.sleep(milliseconds);
 	}
 
 	public static void screenShot(String fileName) throws Throwable {
@@ -345,73 +342,81 @@ public class ActionEngine extends TestEngine {
 		}
 	}
 
-	public static String listeningNetwork(String endpoint, String jsonObject){
-
+	public static String listeningBrowserNetwork(String endpoint, String jsonObject){
 		switch(browserName.toLowerCase()){
 			case "chrome" ->{
-				DevTools devTools = ((ChromeDriver)driver).getDevTools();
-				devTools.createSession();
+				try {
+					System.out.println("Listen to browser network");
+					DevTools devTools = ((ChromeDriver)driver).getDevTools();
+					devTools.createSession();
 
-				devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
-				
-				String apiUrl = endpoint;
-
-				devTools.addListener(Network.responseReceived(), response -> {
-					Response res = response.getResponse();
-					String url = res.getUrl();
+					devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
 					
-					// Jika URL cocok dengan API yang dicari, cetak response
-					if (url.equals(apiUrl)) {
-						// System.out.println(url);
-						// System.out.println("Intercepted API Response from: " + url);
-						// System.out.println("Status Code: " + res.getStatus());
+					String apiUrl = endpoint;
 
-						Network.GetResponseBodyResponse bodyResponse = devTools.send(Network.getResponseBody(response.getRequestId()));
-						String responseBody = bodyResponse.getBody();
+					devTools.addListener(Network.responseReceived(), response -> {
+						Response res = response.getResponse();
+						String url = res.getUrl();
+						
+						// Jika URL cocok dengan API yang dicari, cetak response
+						if (url.equals(apiUrl)) {
+							// System.out.println(url);
+							// System.out.println("Intercepted API Response from: " + url);
+							// System.out.println("Status Code: " + res.getStatus());
 
-						// System.out.println("Response Body: " + responseBody);
+							Network.GetResponseBodyResponse bodyResponse = devTools.send(Network.getResponseBody(response.getRequestId()));
+							String responseBody = bodyResponse.getBody();
 
-						JsonObject json = new Gson().fromJson(responseBody, JsonObject.class);
-						// System.out.println("Parsed JSON: " + json);
+							// System.out.println("Response Body: " + responseBody);
 
-						extractedData = json.getAsJsonObject("data").get(jsonObject).getAsString();
-						// System.out.println("Extracted Data: "+extractedData);
-					}
-				});
+							JsonObject json = new Gson().fromJson(responseBody, JsonObject.class);
+							// System.out.println("Parsed JSON: " + json);
+
+							extractedData = json.getAsJsonObject("data").get(jsonObject).getAsString();
+							// System.out.println("Extracted Data: "+extractedData);
+						}
+					});
+				} catch (DevToolsException e) {
+					System.err.println("Error processing network response: " + e.getMessage());
+				}
 			}
 			case "edge" -> {
-				DevTools devTools = ((EdgeDriver)driver).getDevTools();
-				devTools.createSession();
+				try {
+					DevTools devTools = ((EdgeDriver)driver).getDevTools();
+					devTools.createSession();
 
-				devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
-				
-				String apiUrl = endpoint;
+					devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
+					
+					String apiUrl = endpoint;
 
-				devTools.addListener(Network.responseReceived(), response -> {
-					Response res = response.getResponse();
-					String url = res.getUrl();
-		
-					// Jika URL cocok dengan API yang dicari, cetak response
-					if (url.equals(apiUrl)) {
-						// System.out.println(url);
-						// System.out.println("Intercepted API Response from: " + url);
-						// System.out.println("Status Code: " + res.getStatus());
+					devTools.addListener(Network.responseReceived(), response -> {
+						Response res = response.getResponse();
+						String url = res.getUrl();
+						
+						// Jika URL cocok dengan API yang dicari, cetak response
+						if (url.equals(apiUrl)) {
+							// System.out.println(url);
+							// System.out.println("Intercepted API Response from: " + url);
+							// System.out.println("Status Code: " + res.getStatus());
 
-						Network.GetResponseBodyResponse bodyResponse = devTools.send(Network.getResponseBody(response.getRequestId()));
-						String responseBody = bodyResponse.getBody();
+							Network.GetResponseBodyResponse bodyResponse = devTools.send(Network.getResponseBody(response.getRequestId()));
+							String responseBody = bodyResponse.getBody();
 
-						// System.out.println("Response Body: " + responseBody);
+							// System.out.println("Response Body: " + responseBody);
 
-						JsonObject json = new Gson().fromJson(responseBody, JsonObject.class);
-						// System.out.println("Parsed JSON: " + json);
+							JsonObject json = new Gson().fromJson(responseBody, JsonObject.class);
+							// System.out.println("Parsed JSON: " + json);
 
-						extractedData = json.getAsJsonObject("data").get(jsonObject).getAsString();
-						// System.out.println("Extracted Data: "+extractedData);
-					}
-				});
+							extractedData = json.getAsJsonObject("data").get(jsonObject).getAsString();
+							// System.out.println("Extracted Data: "+extractedData);
+						}
+					});
+				} catch (DevToolsException e) {
+					System.err.println("Error processing network response: " + e.getMessage());
+				}
 			}
 			default -> throw new IllegalArgumentException("Invalid browser: " + browserName+". Currently only support for Chrome and Edge.");
-		}		
+		}
 		return extractedData;
    }
 }

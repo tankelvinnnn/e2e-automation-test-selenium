@@ -20,7 +20,7 @@ import io.restassured.specification.RequestSpecification;
 public class APIClient {
     private static CloseableHttpClient httpClient = HttpClients.createDefault();
     
-    public static HttpResponse sendRequest(String method, String url, String body, String bearerToken) throws Exception {
+    public static HttpResponse sendRequestHttpClient(String method, String url, String body, String bearerToken) throws Exception {
         HttpRequestBase request;
     
         switch (method.toUpperCase()) {
@@ -43,17 +43,17 @@ public class APIClient {
             default -> throw new IllegalArgumentException("Invalid HTTP method: " + method);
         }
     
-        // Set header Authorization jika ada token
+        // Set header Authorization If token exists
         request.setHeader("Content-type", "application/json");
         if (bearerToken != null && !bearerToken.isEmpty()) {
             request.setHeader("Authorization", "Bearer " + bearerToken);
         }
         
-        // Eksekusi permintaan
+        // Execure request
         return httpClient.execute(request);
     }
 
-    public static Response sendRequestRest(String method, String url, String body, String bearerToken) throws Exception {
+    public static Response sendRequestRestAssured(String method, String url, String body, String bearerToken) throws Exception {
         RequestSpecification request = RestAssured.given().header("Content-Type", "application/json");
         
         if (bearerToken != null && !bearerToken.isEmpty()) {
@@ -76,6 +76,7 @@ public class APIClient {
         return response;
     }
 
+    // using apache http client
     public static void displayResponse(HttpResponse response) throws IOException {
         int statusCode = response.getStatusLine().getStatusCode();
         String responseBody = EntityUtils.toString(response.getEntity());
@@ -84,9 +85,10 @@ public class APIClient {
         System.out.println("Response Body: " + responseBody);
     }
 
+    // using restassured
     public static void displayResponse(Response response) {
         System.out.println("Status Code: " + response.getStatusCode());
-        System.out.println("Headers: " + response.getHeaders().toString());
+        // System.out.println("Headers: " + response.getHeaders().toString());
         System.out.println("Response Body: " + response.getBody().asPrettyString());
     }
 

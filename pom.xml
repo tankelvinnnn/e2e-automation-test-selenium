@@ -10,7 +10,7 @@
 
   <name>Automation</name>
   <!-- FIXME change it to the project's website -->
-  <url>http://pay.cakap.com</url>
+  <!-- <url>http://pay.cakap.com</url> -->
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,21 +29,22 @@
     <dependency>
         <groupId>org.seleniumhq.selenium</groupId>
         <artifactId>selenium-java</artifactId>
-        <version>4.20.0</version>
+        <version>4.26.0</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager -->
     <dependency>
         <groupId>io.github.bonigarcia</groupId>
         <artifactId>webdrivermanager</artifactId>
-        <version>5.5.3</version>
+        <version>5.9.2</version>
     </dependency>
+
 
     <!-- https://mvnrepository.com/artifact/org.testng/testng -->
     <dependency>
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>
-        <version>7.9.0</version>
+        <version>7.10.2</version>
     </dependency>
     
     <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
@@ -83,10 +84,31 @@
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-devtools-v130 -->
-    <dependency>
+    <!-- <dependency>
         <groupId>org.seleniumhq.selenium</groupId>
         <artifactId>selenium-devtools-v130</artifactId>
         <version>4.26.0</version>
+    </dependency> -->
+
+    <!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-java -->
+    <dependency>
+        <groupId>io.cucumber</groupId>
+        <artifactId>cucumber-java</artifactId>
+        <version>7.20.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-testng -->
+    <dependency>
+        <groupId>io.cucumber</groupId>
+        <artifactId>cucumber-testng</artifactId>
+        <version>7.20.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.appium/java-client -->
+    <dependency>
+        <groupId>io.appium</groupId>
+        <artifactId>java-client</artifactId>
+        <version>9.3.0</version>
     </dependency>
 
   </dependencies>
@@ -117,7 +139,7 @@
           <version>2.22.1</version>
           <configuration>
 					  <suiteXmlFiles>
-						  <suiteXmlFile>testNg.xml</suiteXmlFile>
+						  <suiteXmlFile>testng.xml</suiteXmlFile>
 					  </suiteXmlFiles>
 				  </configuration>
         </plugin>
