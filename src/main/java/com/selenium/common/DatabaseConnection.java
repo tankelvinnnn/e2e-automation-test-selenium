@@ -7,12 +7,12 @@ import java.sql.Statement;
 
 public class DatabaseConnection {
 
-    private static final String USERNAME = "sq_staging"; // Ganti dengan username Anda
-    private static final String PASSWORD = "Ckpsqu@d1"; // Ganti dengan password Anda
+    private static final String USERNAME = "xxxxg"; // Ganti dengan username Anda
+    private static final String PASSWORD = "xxxxx1"; // Ganti dengan password Anda
     private static Connection connection;
 
     public static void openConnection() throws SQLException {
-        String url = "jdbc:mysql://gwdev.cakap.com:32200/";
+        String url = "jdbc:mysql://xxxxx.xxx:3601/";
         connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
     }
 
